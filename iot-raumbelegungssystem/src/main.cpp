@@ -121,6 +121,8 @@ void loop() {
       digitalWrite(ledPinGreen, HIGH);
       lcd.print("Raum frei");
       lcd.setRGB(0, 255, 0);
+      //lcd.setCursor(0,2);
+      //lcd.print(WiFi.localIP());
   }
   delay(500);
   lcd.clear();
