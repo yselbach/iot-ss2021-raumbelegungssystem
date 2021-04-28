@@ -52,7 +52,7 @@ void setup() {
  
   //==> 2. I2C Bus des ESP32 verwenden. Auf diesem Steckplatz (D2V5) liegen zusätzlich auch direkt die für das Display benötigten 5V! 
   Wire.begin(I2C_SDA, I2C_SCL);  
-  WifiSetup();
+  //WifiSetup();
    
   lcd.begin(16, 2);
   lcd.clear();
@@ -114,6 +114,8 @@ void loop() {
     digitalWrite(ledPinGreen, LOW);
     lcd.print("Raum belegt");
     lcd.setRGB(205,0,0);
+    lcd.setCursor(0,2);
+    lcd.print("1 Person im Raum");
   }
   else
   {
