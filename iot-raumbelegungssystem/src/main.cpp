@@ -1,16 +1,15 @@
 #include <Arduino.h>
- 
+#include "credentials.h"
 #include <Wire.h>                 
 #include "rgb_lcd.h"
+#include <WiFi.h>
  
 #define I2C_SDA 17   //GPIO 17 anstelle Standard GPIO 21 für SDA
 #define I2C_SCL 16   //GPIO 16 anstelle Standard GPIO 22 für SCL
  
  
 rgb_lcd lcd;
-int colorR = 5;
-int colorG = 255;
-int colorB = 5;
+
  
 //long lastMsg = 0;
  
@@ -25,6 +24,26 @@ void TouchSensorClicked() {
   buttonPressed = digitalRead(buttonPin);
 }
 
+void WifiSetup() {
+  lcd.print("Connecting...");
+  Serial.print("\nConnecting to");
+  Serial.println(ssid);
+
+    WiFi.begin(ssid, pass);
+
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    lcd.setCursor(0, 2);
+    lcd.print("Status ");
+    lcd.print(WiFi.status());
+    Serial.println(WiFi.status());
+  }
+
+  Serial.print("\nConnected to");
+  Serial.println(ssid);
+
+}
+
 void setup() {
    Serial.begin(115200);
  
@@ -33,12 +52,12 @@ void setup() {
  
   //==> 2. I2C Bus des ESP32 verwenden. Auf diesem Steckplatz (D2V5) liegen zusätzlich auch direkt die für das Display benötigten 5V! 
   Wire.begin(I2C_SDA, I2C_SCL);  
+  WifiSetup();
    
   lcd.begin(16, 2);
   lcd.clear();
-  lcd.setRGB(colorR, colorG, colorB);
+  lcd.setRGB(255, 255, 255);
   lcd.print("starten ...");
- 
   delay(1000);
   
   
@@ -101,7 +120,7 @@ void loop() {
       digitalWrite(ledPinRed, LOW);
       digitalWrite(ledPinGreen, HIGH);
       lcd.print("Raum frei");
-      lcd.setRGB(colorR, colorG, colorB);
+      lcd.setRGB(0, 255, 0);
   }
   delay(500);
   lcd.clear();
