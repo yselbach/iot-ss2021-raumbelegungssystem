@@ -120,7 +120,12 @@ void loop() {
     lcd.print("Raum belegt");
     lcd.setRGB(205,0,0);
     lcd.setCursor(0,2);
-    lcd.printf("%d Person im Raum", anzahlPersonen);
+    if(anzahlPersonen==1){
+      lcd.printf("%d Person im Raum", anzahlPersonen);
+    }
+    if(anzahlPersonen>1){
+      lcd.printf("%d Pers. im Raum", anzahlPersonen);
+    }
   }
   else
   {
