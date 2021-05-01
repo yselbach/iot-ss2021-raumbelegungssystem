@@ -10,6 +10,8 @@ const char *pass = "Network Password";
 
 Network Name und Network Password durch eigene Daten ersetzen.
 
+------------------------------------------------------
+
 Ordner Frontend für github.io Page.
 
 Ordner Backend für WebApp.
