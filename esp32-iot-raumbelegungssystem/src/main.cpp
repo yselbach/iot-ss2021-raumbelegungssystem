@@ -4,69 +4,71 @@
 #include "rgb_lcd.h"
 #include <WiFi.h>
  
-#define I2C_SDA 17   //GPIO 17 anstelle Standard GPIO 21 für SDA
-#define I2C_SCL 16   //GPIO 16 anstelle Standard GPIO 22 für SCL
- 
+#define I2C_SDA 17   //GPIO 17 anstelle Standard GPIO 21 fuer SDA
+#define I2C_SCL 16   //GPIO 16 anstelle Standard GPIO 22 fuer SCL
+//define fuer das LCD RGB Backlight
  
 rgb_lcd lcd;
 
  
-//long lastMsg = 0;
- 
-//char buf[50];
- 
-int buttonPressed = 0; // Finger auf TouchSensor
-int touchSensor = 26; // TouchSensor, außen vor der Tür
-int button= 18;       // Button, innen vor der Tür
-int ledPinRed = 14;
-int ledPinGreen = 33;
+#define MOTION_AUSSEN 33 //Bewegungssensor aussen an der Tuere
+#define MOTION_INNEN 26  //Bewegungssensor innen an der Tuere
+int ledPinRed = 22;
+int ledPinGreen = 18;
 int anzahlPersonen = 0;
-int buttonZaehler = 0;
-int touchZaehler = 0;
+int InnenZaehler = 0; //Zaehler fuer den Innensensor
+int AussenZaehler = 0; //Zaehler fuer den Aussensensor
 
 
-void TouchSensorClicked() {
-  buttonPressed = digitalRead(touchSensor);
-}
-
+//Bestimmung, wie viele Personen im Raum, welche Richtung sie gehen und ob sie sich umentscheiden
 void tuerschranke(){
 
-
-if((digitalRead(touchSensor)==HIGH) && (digitalRead(button)==LOW)){
-  if((buttonZaehler==0) && (touchZaehler==0)){
-      touchZaehler++;
-      Serial.print("touchZaehler wurde erhöht\n");
-  } else if((buttonZaehler==1) && (touchZaehler==0)){    //Person verlässt den Raum
-      touchZaehler++;
+//Aussenzaehler wird erhoeht. 3 Moeglichkeiten
+//1. beide Zaehler auf Null => Aussenzaehler erhoehen
+//2. Innenzaehler auf Eins => Person hat zuerst schon den Innenzaehler ausgeloest und nun aussen, daher Laufrichtung aus dem Raum 
+//3. Aussenzaehler auf Eins => Person hat zweimal den Aussensensor beruehrt, hat sich wohl in der Tuere doch umentschieden und ist wieder gegangen
+if((digitalRead(MOTION_AUSSEN)==HIGH) && (digitalRead(MOTION_INNEN)==LOW)){
+  if((InnenZaehler==0) && (AussenZaehler==0)){
+      AussenZaehler++;
+      Serial.print("Aussenzaehler wurde erhoeht\n");
+  } else if((InnenZaehler==1) && (AussenZaehler==0)){    //Person verlaesst den Raum
+      AussenZaehler++;
       anzahlPersonen--;
       Serial.print("Eine Person hat den Raum verlassen\n");
-  } else if((buttonZaehler==0) && (touchZaehler==1)){
+  } else if((InnenZaehler==0) && (AussenZaehler==1)){     //Person bleibt aus dem Raum
       Serial.print("Person wollte doch nicht in den Raum und ist umgedreht\n");
-      touchZaehler=0;
+      AussenZaehler=0;
   }
 }
 
-if((digitalRead(touchSensor)==LOW) && (digitalRead(button)==HIGH)){
-    if((buttonZaehler==0) && (touchZaehler==0)){
-      buttonZaehler++;
-      Serial.print("buttonZaehler wurde erhöht\n");
-} else if((buttonZaehler==0) && (touchZaehler==1)){
-      buttonZaehler++;
+//Innenzaehler wird erhoeht. 3 Moeglichkeiten
+//1. beide Zaehler auf Null => Innenzaehler erhoehen
+//2. Aussenzaehler auf Eins => Person hat zuerst schon den Aussenzaehler ausgeloest und nun innen, daher Laufrichtung in den Raum 
+//3. Innenzaehler auf Eins => Person hat zweimal den Innensensor beruehrt, hat sich wohl in der Tuere doch umentschieden und ist im Raum geblieben
+if((digitalRead(MOTION_AUSSEN)==LOW) && (digitalRead(MOTION_INNEN)==HIGH)){
+    if((InnenZaehler==0) && (AussenZaehler==0)){
+      InnenZaehler++;
+      Serial.print("Innenzaehler wurde erhoeht\n");
+} else if((InnenZaehler==0) && (AussenZaehler==1)){     //Person geht in den Raum
+      InnenZaehler++;
       anzahlPersonen++;
       Serial.print("Eine Person ist eingetreten\n");
-} else if((buttonZaehler==1) && (touchZaehler==0)){
+} else if((InnenZaehler==1) && (AussenZaehler==0)){     //Person bleibt im Raum
       Serial.print("Die Person ist doch im Raum geblieben\n");
-      buttonZaehler=0;
+      InnenZaehler=0;
 }}
-if((touchZaehler==1) && (buttonZaehler==1)){
-  buttonZaehler=0;
-  touchZaehler=0;
+//wenn beide Sensoren ausgeloest wurden, Zahlen wieder auf null
+if((AussenZaehler==1) && (InnenZaehler==1)){
+  InnenZaehler=0;
+  AussenZaehler=0;
 }
+//Fehlerbehebung, falls Sensoren doch einmal falsche Signale aufnehmen. Es koennen nicht weniger als Null Leute im Raum sein
 if(anzahlPersonen<0){
   anzahlPersonen=0;
 }
 }
 
+//Wifi Verbindung herstellen mit Anzeige auf LCD Display
 void WifiSetup() {
   lcd.print("Connecting...");
   Serial.print("\nConnecting to");
@@ -87,13 +89,10 @@ void WifiSetup() {
 
 }
 
+//setup Methode, WifiSetup starten, Display resetten, alle Sensoren definieren auf welche Pins sie achten und Interrupts bestimmen
 void setup() {
    Serial.begin(9600);
  
-  //Optional, da Standard
-  //Wire.begin(SDA, SCL);     //SDA default is GPIO 21, SCL default is GPIO 22
- 
-  //==> 2. I2C Bus des ESP32 verwenden. Auf diesem Steckplatz (D2V5) liegen zusätzlich auch direkt die für das Display benötigten 5V! 
   Wire.begin(I2C_SDA, I2C_SCL);  
   WifiSetup();
    
@@ -105,12 +104,16 @@ void setup() {
 
   pinMode(ledPinRed, OUTPUT);
   pinMode(ledPinGreen, OUTPUT);
-  pinMode(touchSensor, INPUT);
+  pinMode(MOTION_AUSSEN, INPUT);
+  pinMode(MOTION_INNEN, INPUT);
+    //Serial.begin(9600);
 
-  attachInterrupt(touchSensor, tuerschranke, CHANGE);
-  attachInterrupt(button, tuerschranke, CHANGE);
+  attachInterrupt(MOTION_AUSSEN, tuerschranke, CHANGE);
+  attachInterrupt(MOTION_INNEN, tuerschranke, CHANGE);
 }
  
+//In der Loop wird die Ausgabe des Displays definiert. Die Farbbestimmung, ob Personen im Raum sind oder nicht und die Anzeige
+//fuer das WIFI Setup
 void loop() {
 
 
