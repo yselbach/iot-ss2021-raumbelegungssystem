@@ -1,12 +1,12 @@
 const mongoose = require('mongoose')
 
 const roomSchema = new mongoose.Schema({
-    roomId: {
+    /*roomId: {
         type: String,
         required: true,
         unique: true
-    },
-    number:{
+    },*/
+    roomNumber:{
         type: String,
         required: true,
         default: false
