@@ -30,7 +30,7 @@ router.get('/:roomId', getRoom, async(req, res) => {
     res.json(res.room)
 })
 
-//Raum zurücksetzen
+//Raum verlassen
 
 
 //Personen betreten Raum
