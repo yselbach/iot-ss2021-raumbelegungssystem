@@ -6,9 +6,9 @@ const url = `mongodb+srv://PhilippNicoYannik:YannikNicoPhilipp@rooms.qyupo.mongo
 
 const connectionParams={
     useNewUrlParser: true,
-    useCreateIndex: true,
+    //useCreateIndex: true,
     useUnifiedTopology: true,
-    useFindAndModify: false
+    //useFindAndModify: false
 }
 mongoose.connect(url,connectionParams)
     .then( () => {
@@ -19,6 +19,10 @@ mongoose.connect(url,connectionParams)
     })
 
 app.use(express.json())
+
+const roomRouter = require('./routes/room')
+app.use('/rooms', roomRouter)
+
 
 //const userRouter = require('./routes/person')
 //app.use('/person', personRouter)
