@@ -2,7 +2,7 @@
 
 Repository für das Modul »Internet of Things« im Sommersemester 2021 im Studiengang Medieninformatik an der TH Köln.
 
-Node.js, Docker, git und VS Code mit PlatformIO vorrausgesetzt
+Node.js, Docker, git und VS Code mit PlatformIO vorausgesetzt
 
 1. Repository clonen (mit der Konsole git clone)
 2. in den Ordner esp32-iot-raumbelegungssystem/ wechseln und in VS Code öffnen
