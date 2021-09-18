@@ -9,9 +9,9 @@ Node.js, Docker, git und VS Code mit PlatformIO vorrausgesetzt
 3. Libarys (Grove - LCD RGB Backlight by Seeed Studio & PubSubClient) installieren
 4. in iot-raumbelegungssystem/src/ eine credentials.h mit folgendem Inhalt erstellen:
 
-* const char *ssid = "Network Name";
-* const char *pass = "Network Password";
-* const char *mqttserver = "MQTT Broker";
+ const char *ssid = "Network Name";
+ const char *pass = "Network Password";
+ const char *mqttserver = "MQTT Broker";
 
 "Network Name" , "Network Password" und "MQTT Broker" durch eigene Daten ersetzen.
 
