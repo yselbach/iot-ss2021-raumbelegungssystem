@@ -12,6 +12,7 @@ Node.js, Docker, git und VS Code mit PlatformIO vorrausgesetzt
 * const char *ssid = "Network Name";
 * const char *pass = "Network Password";
 * const char *mqttserver = "MQTT Broker";
+
 "Network Name" , "Network Password" und "MQTT Broker" durch eigene Daten ersetzen.
 
 5. Docker starten und  Node-RED mit Docker installieren.
