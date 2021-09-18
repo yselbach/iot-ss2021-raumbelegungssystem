@@ -9,13 +9,13 @@ Node.js, Docker, git und VS Code mit PlatformIO vorrausgesetzt
 3. Libarys (Grove - LCD RGB Backlight by Seeed Studio & PubSubClient) installieren
 4. in iot-raumbelegungssystem/src/ eine credentials.h mit folgendem Inhalt erstellen:
 
-const char *ssid = "Network Name";
+  const char *ssid = "Network Name";
 
-const char *pass = "Network Password";
+  const char *pass = "Network Password";
 
-const char *mqttserver = "MQTT Broker";
+  const char *mqttserver = "MQTT Broker";
 
-"Network Name" , "Network Password" und "MQTT Broker" durch eigene Daten ersetzen.
+  "Network Name" , "Network Password" und "MQTT Broker" durch eigene Daten ersetzen.
 
 5. Docker starten und  Node-RED mit Docker installieren.
 docker run -it -p 1880:1880 -v node_red_data:/data --name mynodered nodered/node-red
