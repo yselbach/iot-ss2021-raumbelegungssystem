@@ -18,5 +18,5 @@ Node.js, Docker, git und VS Code mit PlatformIO vorausgesetzt
 5. Docker starten und  Node-RED mit Docker installieren.
 ```docker run -it -p 1880:1880 -v node_red_data:/data --name mynodered nodered/node-red```
 
-6. Node-Red starten & im Browser localhost:1880 aufrufen. In NodeRed dann noch den Flow https://github.com/yselbach/iot-ss2021-raumbelegungssystem/blob/main/raumbelegungssystem_dashboard.json importieren.
-Um auf das Dashboard zu kommen localhost:1880/ui im Browser aufrufen
+6. Node-Red starten & im Browser ```localhost:1880``` aufrufen. In NodeRed dann noch den Flow https://github.com/yselbach/iot-ss2021-raumbelegungssystem/blob/main/raumbelegungssystem_dashboard.json importieren.
+Um auf das Dashboard zu kommen ```localhost:1880/ui``` im Browser aufrufen
